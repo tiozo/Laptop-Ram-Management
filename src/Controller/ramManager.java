@@ -6,13 +6,14 @@
 package Controller;
 
 import Viewer.Menu;
-import java.util.List;
-import objectData.RAM;
-import fileIo.binWriter;
 import fileIo.IFileReadWrite;
+import fileIo.binWriter;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
+import java.util.SortedMap;
 import java.util.TreeMap;
+import objectData.RAM;
 
 /**
  *
@@ -100,13 +101,19 @@ public class ramManager implements iRAM<RAM> {
     public List<RAM> getByType(String id) {
         ///throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 
-        List<RAM> result = new ArrayList<>();
-        for (RAM ram : mapR.values()) {
-            if (ram.getType().equals(id)) {
-                result.add(ram);
-            }
+        RAM from = new RAM(id, null, null);
+        RAM to = new RAM(id + "\\uFFFF", null, null);
+
+        SortedMap<String, RAM> subset = mapR.subMap(from.getCode(), to.getCode());
+        List<RAM> tmp = new ArrayList<>(subset.values());
+        List<RAM> res = new ArrayList<>();
+
+        for (RAM e: tmp) {
+            e.setBus(null);
+            e.setBrand(null);
+            res.add(e);
         }
-        return result;
+        return res;
     }
 
     @Override
